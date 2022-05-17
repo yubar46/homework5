@@ -99,7 +99,7 @@ public class UserRepositoryJDBC implements UserRepository {
     public boolean validUser(String userName) throws SQLException {
         String userCheek="select *from User where userName=?";
         PreparedStatement preparedStatement = connection.prepareStatement(userCheek);
-        preparedStatement.setString(1,userCheek);
+        preparedStatement.setString(1,userName);
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet.next();
     }

@@ -184,14 +184,14 @@ public class Menu {
     }
 
         public User singUp() throws SQLException {
-        String validUserName = "";
-        String userName = "   ";
-        while (!validUserName.equals(userName)) {
+        String validUserName;
+        String userName;
+        do {
             System.out.println("please enter your user name");
             userName = inputString.next();
-            if (!applicationContext.getUserRepository().validUser(userName)) validUserName = userName;
 
-        }
+
+        }while (!applicationContext.getUserRepository().validUser(userName));
             String password = cheekPassword();
             System.out.println("please enter your first Name");
             String firstName = inputString.nextLine();
