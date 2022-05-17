@@ -42,8 +42,8 @@ public class CartRepositoryJDBC implements  CartRepository{
 
     @Override
     public void viewCart(int userId) throws SQLException {
-        String viewCart = "select P.name, c.number,P.price, c.AllPrice from Cart as c left join" +
-                " Cart_has_Product ChP on c.id = ChP.Cart_id,c.id left join Product P on ChP.Product_id = P.id where User_id=?";
+        String viewCart = "select P.name, c.number,P.price, c.AllPrice , c.id from Cart as c left join" +
+                " Cart_has_Product ChP on c.id = ChP.Cart_id left join Product P on ChP.Product_id = P.id where User_id=?";
             PreparedStatement preparedStatement = connection.prepareStatement(viewCart);
             preparedStatement.setInt(1,userId);
             ResultSet resultSet = preparedStatement.executeQuery();

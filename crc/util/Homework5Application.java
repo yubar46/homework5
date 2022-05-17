@@ -8,8 +8,7 @@ public class Homework5Application {
         Menu menu = new Menu();
 
         menu.showFirstMenu();
-       int select= menu.customerSelect();
-       int correctSelect = menu.cheekSelect(select);
+       int correctSelect = menu.cheekSelect(menu.customerSelect());
        menu.enterMenu(correctSelect);
 
     }

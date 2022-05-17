@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DatabaseUtil {
 
-    private Connection connection;
+     Connection connection;
     private String databaseUrl="jdbc:mysql://localhost:3306/homeWork5";
     private String databaseUser ="user";
     private String databasePassword=  "123321";
@@ -15,14 +15,11 @@ public class DatabaseUtil {
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         this.databaseUrl = "jdbc:mysql://localhost:3306/homeWork5";
-        this.databaseUser = "user";
+        this.databaseUser = "root";
         this.databasePassword = "123321";
         this.connection = DriverManager.getConnection(databaseUrl,databaseUser,databasePassword);
     }
 
-    public Connection getConnection() throws SQLException {
-        return  this.connection = DriverManager.getConnection(databaseUrl,databaseUser,databasePassword);
-    }
 
 
 

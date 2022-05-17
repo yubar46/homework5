@@ -11,24 +11,21 @@ import java.sql.SQLException;
 
 public class ApplicationContext {
 
-private DatabaseUtil databaseUtil;
+private DatabaseUtil databaseUtil = new DatabaseUtil();
 private User user = new User();
 private Cart cart = new Cart();
 
-     String databaseUrl="jdbc:mysql://localhost:3306/homeWork5";
-     String databaseUser ="user";
-     String databasePassword=  "123321";
-    Connection connection = DriverManager.getConnection(databaseUrl,databaseUser,databasePassword);
 
 
-   private UserRepository userRepository = new UserRepositoryJDBC(connection,user);
-    private ProductRepository productRepository= new ProductRepositoryJDBC(databaseUtil.getConnection());
-    private FeatureRepository featureRepository = new FeatureRepositoryJDBC(databaseUtil.getConnection());
-    private AttributeRepository attributeRepository= new AttributeRepositoryJDBC(databaseUtil.getConnection());
-    private AddressRepository addressRepository = new AddressRepositoryJDBC(databaseUtil.getConnection());
-    private ProductTypeRepository productTypeRepository = new ProductTypeRepositoryJDBC(databaseUtil.getConnection());
-    private CartRepository cartRepository = new CartRepositoryJDBC(databaseUtil.getConnection());
-    private PastOrdersRepository pastOrdersRepository = new PastOrdersRepositoryJDBC(databaseUtil.getConnection());
+
+   private UserRepository userRepository = new UserRepositoryJDBC(databaseUtil.connection,user);
+    private ProductRepository productRepository= new ProductRepositoryJDBC(databaseUtil.connection);
+    private FeatureRepository featureRepository = new FeatureRepositoryJDBC(databaseUtil.connection);
+    private AttributeRepository attributeRepository= new AttributeRepositoryJDBC(databaseUtil.connection);
+    private AddressRepository addressRepository = new AddressRepositoryJDBC(databaseUtil.connection);
+    private ProductTypeRepository productTypeRepository = new ProductTypeRepositoryJDBC(databaseUtil.connection);
+    private CartRepository cartRepository = new CartRepositoryJDBC(databaseUtil.connection);
+    private PastOrdersRepository pastOrdersRepository = new PastOrdersRepositoryJDBC(databaseUtil.connection);
 
     public UserRepository getUserRepository() {
         return userRepository;

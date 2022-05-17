@@ -43,7 +43,7 @@ public class ProductTypeRepositoryJDBC implements ProductTypeRepository {
         ResultSet resultSet= statement.executeQuery(allPT);
         while (resultSet.next()){
             System.out.print("id: "+resultSet.getInt(1)+"\t");
-            System.out.printf("%s %s %n","product type: "+resultSet.getString(2));
+            System.out.printf("%s %s %n","product type: ",resultSet.getString(2));
 
         }
 

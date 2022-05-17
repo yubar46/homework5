@@ -18,8 +18,8 @@ public class Menu {
     }
 
         public void showFirstMenu(){
-        System.out.printf("%s %n %s %n %s %n %s %n %s %n","welcome to homework5 market","for veiw products enter 1 "
-                ,"for login enter 2 ","for sign up enter 3","for exit enter-1");
+        System.out.printf("%s %n %s %n %s %n %s %n ","welcome to homework5 market"
+                ,"for login enter 1 ","for sign up enter 2","for exit enter-1");
 
 
 
@@ -38,9 +38,12 @@ public class Menu {
                while (correctSelect==0){
                    if (customerSelect==1||customerSelect==2||customerSelect==-1){
                        correctSelect=customerSelect;
-                   }else System.out.println("wrong number try again");
-                   showFirstMenu();
-                   customerSelect();
+                   }else {
+                       System.out.println("wrong number try again");
+                       showFirstMenu();
+                       customerSelect();
+                   }
+
                }
                 return correctSelect;
         }
@@ -234,16 +237,16 @@ public class Menu {
 
         private String cheekPassword(){
 
-            String cheekedPassword =null;
+            String cheekedPassword ="";
             String password1 = "";
-            while (!cheekedPassword.equals(password1)){
+            do {
                 System.out.println("please enter your password");
                 password1 =inputString.next();
                 System.out.println("please enter your password");
                 String password2 =inputString.next();
                 if (password1.equals(password2))cheekedPassword=password1;
 
-            }
+            } while (!cheekedPassword.equals(password1));
             return cheekedPassword;
         }
         private String cheekPhoneNumber() throws SQLException {
