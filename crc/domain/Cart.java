@@ -3,10 +3,10 @@ package domain;
 import java.util.ArrayList;
 
 public class Cart {
-   private int itemsPrices;
-   private int  allPrice;
+   private int cartPrice;
    private int UserId;
    int id;
+
    Address address;
 
     public int getId() {
@@ -17,44 +17,33 @@ public class Cart {
         this.id = id;
     }
 
-    private ArrayList<Product>products = new ArrayList<Product>(5);
+    private ArrayList<CartItem >products = new ArrayList<CartItem>(5);
 
     public Cart(){
 
     }
 
-    public void calculateItemPrice(){
+    public void calculateCartPrice(){
         for (int i=0;i<products.size();i++){
-           allPrice+= products.get(i).getPrice()*products.get(i).getNumber();
 
+
+            cartPrice+= products.get(i).getAllPrice();
 
         }
 
     }
 
-    public int getItemsPrices() {
-        return itemsPrices;
+    public int getCartPrice() {
+        return cartPrice;
     }
 
-    public void setItemsPrices(int itemsPrices) {
-        this.itemsPrices = itemsPrices;
+    public void setCartPrice(int cartPrice) {
+        this.cartPrice = cartPrice;
     }
 
-    public int getAllPrice() {
-        return allPrice;
-    }
 
-    public void setAllPrice(int allPrice) {
-        this.allPrice = allPrice;
-    }
 
-    public ArrayList<Product> getProducts() {
-        return products;
-    }
 
-    public void setProducts(Product products) {
-        this.products.add(products);
-    }
 
     public int getUserId() {
         return UserId;
@@ -64,4 +53,13 @@ public class Cart {
         UserId = userId;
     }
 
+
+
+    public ArrayList<CartItem> getProducts() {
+        return products;
+    }
+
+    public void setProducts(CartItem cartItem) {
+        this.products.add(cartItem);
+    }
 }

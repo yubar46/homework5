@@ -1,8 +1,6 @@
 package util;
 
 import domain.*;
-import repository.ProductRepositoryJDBC;
-import repository.ProductTypeRepository;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -11,6 +9,7 @@ public class Menu {
 
     Scanner inputNumber = new Scanner(System.in);
     Scanner inputString = new Scanner(System.in);
+    Scanner inputString2 = new Scanner(System.in);
     ApplicationContext applicationContext =new ApplicationContext();
     boolean exit = false;
 
@@ -77,104 +76,121 @@ public class Menu {
                 ,"for view your cart enter2 ","for exit enter-1");
              int select= customerSelect();
         if (select==1){
-            applicationContext.getProductTypeRepository().readAllProductTypes();
-            System.out.println("please select productType");
-            int productType = inputNumber.nextInt();
-            applicationContext.getProductRepository().showAllProducts(productType);
+            viewProduct();
+            int choice=0;
+            while (choice!=-1){
             System.out.println("for add product to your card enter 1");
             System.out.println("for view your cart enter 2 ");
             System.out.println("for view another product type enter3  ");
             System.out.println("for exit enter -1");
-            int choice = inputNumber.nextInt();
+             choice = inputNumber.nextInt();
 
-            if (choice==1){
-                System.out.println("enter product id");
-                int productId = inputNumber.nextByte();
+                if (choice==1){
+                    System.out.println("enter product id");
+                    int productId = inputNumber.nextByte();
 
-               Product product = applicationContext.getProductRepository().selectProduct(productId);
-                boolean exist = false;
-               do {
-                   System.out.println("enter number of product");
-                   int nOfProduct = inputNumber.nextInt();
-                   product.setNumber(nOfProduct);
-                     exist = applicationContext.getProductRepository().isExist(product);
-                     if (!exist){
-                         System.out.println("item is not enough exist choice number again");
-                     }
-               }while (exist =false);
-                Cart cart =new Cart();
-                if (cart.getProducts().size()>5){
-                    cart.setProducts(product);
-                    cart.setUserId(user.getId());
-                    cart.calculateItemPrice();
+                    Product product = applicationContext.getProductRepository().selectProduct(productId);
 
-                        int id= applicationContext.getCartRepository().addToCart(cart);
-                        cart.setId(id);
-                    applicationContext.setCart(cart);
+                    boolean exist = false;
+                    int nOfOrder;
+                    do {
+                        System.out.println("enter number of product");
+                         nOfOrder = inputNumber.nextInt();
 
+                        exist = applicationContext.getProductRepository().isExist(product,nOfOrder);
+                        if (!exist){
+                            System.out.println("item is not enough exist choice number again");
+                        }
+                    }while (exist =false);
+                    CartItem cartItem = new CartItem(product,nOfOrder);
 
-                }else System.out.println("cart is full");
+                    if (applicationContext.getCart().getProducts().size()<5){
+                        applicationContext.getCart().setProducts(cartItem);
+                        applicationContext.getCart().setUserId(user.getId());
+                        applicationContext.getCart().calculateCartPrice();
 
 
-            }if (choice==2){
-                applicationContext.getCartRepository().viewCart(applicationContext.getCart().getUserId());
-                System.out.println("for delete order from cart enter 1");
-                System.out.println("Finalize the shopping cart enter 2");
-                int cartChoice = inputNumber.nextInt();
-                if (cartChoice==1){
-                    System.out.println("enter cart id");
-                    int cartId = inputNumber.nextInt();
-                applicationContext.getCartRepository().deleteFromCart(cartId);
-                applicationContext.getCart().calculateItemPrice();
-                applicationContext.getCartRepository().addToCart(applicationContext.getCart());
-                }
-                if (cartChoice==2){
-                    if (user.getAddresses().isEmpty()){
-                        System.out.println("please enter your State");
-                        String state = inputString.next();
-                        System.out.println("please enter your city");
-                        String city = inputString.next();
-                        System.out.println("please enter your street name");
-                        String streetName = inputString.next();
-                        System.out.println("please enter your pistol code");
-                        String pistolCode = inputString.next();
-                        Address address = new Address(state,city,streetName,pistolCode);
-                        address.setUserId(user.getId());
-                        int addressId = applicationContext.getAddressRepository().addAddress(address);
-                        address.setId(addressId);
-                        user.setAddresses(address);
+                        int id= applicationContext.getCartRepository().addToCart(applicationContext.getCart());
+                        applicationContext.getCart().setId(id);
+                        applicationContext.setCart(applicationContext.getCart());
+                        product.setNumber(product.getNumber()-nOfOrder);
+                        applicationContext.getProductRepository().editProduct(product,(product.getNumber()-nOfOrder));
 
-                    }else{
 
-                        applicationContext.getAddressRepository().readAddress(user.getId());
-                        System.out.println("please enter address id");
-                        int addressId = inputNumber.nextInt();
-                        PastOrders pastOrders = new PastOrders();
-                        Address address =new Address() ;
+
+                    }else System.out.println("cart is full");
+
+
+                }if (choice==2){
+                    applicationContext.getCartRepository().viewCart(applicationContext.getCart().getUserId());
+                    System.out.println("for delete order from cart enter 1");
+                    System.out.println("Finalize the shopping cart enter 2");
+                    int cartChoice = inputNumber.nextInt();
+                    if (cartChoice==1){
+                        System.out.println("enter cart id");
+                        int cartId = inputNumber.nextInt();
+                        System.out.println("please enter product id");
+                        int productId = inputNumber.nextInt();
+                        applicationContext.getCartRepository().deleteFromCart(cartId,productId);
+                        Cart cart = new Cart();
+                      cart=  applicationContext.getCartRepository().selectCart(user.getId());
+                                applicationContext.getCartRepository().addToCart(cart);
+
+                    }
+                    if (cartChoice==2){
+                        if (user.getAddresses().size()==0){
+                            System.out.println("please enter your State");
+                            String state = inputString.next();
+                            System.out.println("please enter your city");
+                            String city = inputString.next();
+                            System.out.println("please enter your street name");
+                            String streetName = inputString.next();
+                            System.out.println("please enter your pistol code");
+                            String pistolCode = inputString.next();
+                            Address address = new Address(state,city,streetName,pistolCode);
+                            address.setUserId(user.getId());
+                            int addressId = applicationContext.getAddressRepository().addAddress(address);
+                            address.setId(addressId);
+                            user.setAddresses(address);
+
+                        }else{
+
+                            applicationContext.getAddressRepository().readAddress(user.getId());
+                            System.out.println("please enter address id");
+                            int addressId = inputNumber.nextInt();
+                            PastOrders pastOrders = new PastOrders();
+                            Address address =new Address() ;
                             for (int i = 0 ; i<user.getAddresses().size();i++){
                                 if (user.getAddresses().get(i).getId()==addressId){
-                                        address =(user.getAddresses().get(i));
+                                    address =(user.getAddresses().get(i));
 
                                 }
                             }
                             for (int i = 0; i< applicationContext.getCart().getProducts().size();i++){
-                                pastOrders.setProduct(applicationContext.getCart().getProducts().get(i));
-                                pastOrders.setPrice(applicationContext.getCart().getProducts().get(i).getPrice());
+                                pastOrders.setProduct(applicationContext.getCart().getProducts().get(i).getProduct());
+                                pastOrders.setPrice(applicationContext.getCart().getProducts().get(i).getProduct().getPrice());
                                 pastOrders.setUserID(user.getId());
                                 user.getPastOrders().add(pastOrders);
                                 applicationContext.getPastOrdersRepository().AddToPastOrders(pastOrders);
-                               // applicationContext.getProductRepository().editProduct(pastOrders.getProduct(),
-                                 //       ( pastOrders.getProduct().getNumber()));
+                                // applicationContext.getProductRepository().editProduct(pastOrders.getProduct(),
+                                //       ( pastOrders.getProduct().getNumber()));
 
                             }
 
 
 
+                        }
+
                     }
 
+                }if(choice==3){
+                    viewProduct();
                 }
 
+
+
             }
+
 
         }
 
@@ -182,6 +198,13 @@ public class Menu {
 
 
     }
+
+        private  void viewProduct() throws SQLException {
+            applicationContext.getProductTypeRepository().readAllProductTypes();
+            System.out.println("please select productType");
+            int productType = inputNumber.nextInt();
+            applicationContext.getProductRepository().showAllProducts(productType);
+        }
 
         public User singUp() throws SQLException {
         String validUserName;
@@ -191,12 +214,12 @@ public class Menu {
             userName = inputString.next();
 
 
-        }while (!applicationContext.getUserRepository().validUser(userName));
+        }while (applicationContext.getUserRepository().validUser(userName));
             String password = cheekPassword();
             System.out.println("please enter your first Name");
-            String firstName = inputString.nextLine();
+            String firstName = inputString2.nextLine();
             System.out.println("please enter your last Name");
-            String lastName = inputString.nextLine();
+            String lastName = inputString2.nextLine();
                     String phoneNumber= cheekPhoneNumber();
                     String email = cheekEmail();
 
@@ -237,17 +260,17 @@ public class Menu {
 
         private String cheekPassword(){
 
-            String cheekedPassword ="";
-            String password1 = "";
+            String cheekPassword ;
+            String password ;
             do {
                 System.out.println("please enter your password");
-                password1 =inputString.next();
+                password =inputString.next();
                 System.out.println("please enter your password");
-                String password2 =inputString.next();
-                if (password1.equals(password2))cheekedPassword=password1;
+                 cheekPassword =inputString.next();
+                if (password.equals(cheekPassword));
 
-            } while (!cheekedPassword.equals(password1));
-            return cheekedPassword;
+            } while (!cheekPassword.equals(password));
+            return cheekPassword;
         }
         private String cheekPhoneNumber() throws SQLException {
             String phoneNumber = null;
@@ -287,15 +310,7 @@ public class Menu {
 
 
 
-    //مشاهده ی سبد خرید
 
-    // با مشاهده ی سبد خرید می توان محصولات داخل سبد رو دیلیت کرد
-    // داخل منو سبد خرید میتوان لیست محصولات را انتخاب کرد
-
-    //مشاهده ی محصولات سفارش یافته در گذشته
-    //اضافه کردن محصولات به سبد خرید
-    //تایید نهایی خرید که برابر است با کم شدن محصولات انتخاب شده از موجودی انبار
-    //خروج
 
 
 }

@@ -13,7 +13,7 @@ public class User {
     private  int id;
 
 
-    private List<Address> addresses;
+    private ArrayList<Address> addresses;
 
    private Cart cart = new Cart();
 

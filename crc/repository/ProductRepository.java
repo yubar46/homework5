@@ -11,7 +11,7 @@ public interface ProductRepository {
     public void editProduct(Product product,int newNumber) throws SQLException;
     public void deleteProduct(Product product);
     public void showAllProducts(int ptId) throws SQLException;
-    public boolean isExist(Product product) throws SQLException;
+    public boolean isExist(Product product, int nOfOrder) throws SQLException;
     public Product selectProduct(int productId) throws SQLException;
 
 }

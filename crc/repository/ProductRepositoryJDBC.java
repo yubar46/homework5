@@ -41,7 +41,7 @@ public class ProductRepositoryJDBC implements  ProductRepository {
     }
 
     public void showAllProducts(int ptId) throws SQLException {
-        String showProducts = "select p.name,A.title,f.value,p.price,p.number from ProductType as pt left join  Product as p on" +
+        String showProducts = "select p.name,A.title,f.value,p.price,p.number,p.id from ProductType as pt left join  Product as p on" +
                 " pt.id = p.ProductType_id left join ProductType_has_Attribute  as PThA on pt.id = PThA.ProductType_id" +
                 "  left join Attribute  as A on PThA.Attribute_id = A.id left join Feature as f on f.AttributeId = A.id where pt.id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(showProducts);
@@ -54,6 +54,8 @@ public class ProductRepositoryJDBC implements  ProductRepository {
                 System.out.print(resultSet.getString(2)+" :"+resultSet.getString(3)+"\t");
                 System.out.print( "price : "+resultSet.getString(4)+"\t");
                 System.out.print( "number : "+resultSet.getString(5)+"\t");
+                System.out.print( "product id  : "+resultSet.getString(6)+"\t");
+                System.out.println();
             }
 
         }
@@ -71,12 +73,13 @@ public class ProductRepositoryJDBC implements  ProductRepository {
         ResultSet resultSet = preparedStatement.executeQuery();
 
         while (resultSet.next()){
-            if (product.getId()!=resultSet.getInt(1)){
+
                 product.setId(resultSet.getInt(1));
                 product.setName(resultSet.getString(2));
+                product.setNumber(resultSet.getInt(3));
                 product.setPrice(resultSet.getInt(4));
                 product.setProductTypeId(resultSet.getInt(5));
-            }
+
 
 
 
@@ -84,13 +87,18 @@ public class ProductRepositoryJDBC implements  ProductRepository {
         return product;
     }
 
-    public boolean isExist(Product product) throws SQLException {
+    public boolean isExist(Product product, int nOfOrder) throws SQLException {
+        boolean isExist = false;
 
         String cheek="select  number from Product as p where p.id=?";
         PreparedStatement preparedStatement = connection.prepareStatement(cheek);
+        preparedStatement.setInt(1,product.getId());
         ResultSet resultSet = preparedStatement.executeQuery();
-        if (product.getNumber()-resultSet.getInt(1)>=0)return true;
-        else return false;
+        while (resultSet.next()){
+            if (resultSet.getInt(1)-nOfOrder>=0)isExist=true;
+        }
+
+         return isExist;
 
 
     }

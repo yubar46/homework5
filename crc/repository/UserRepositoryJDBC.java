@@ -19,22 +19,24 @@ public class UserRepositoryJDBC implements UserRepository {
 
     @Override
     public int addUser(User user) throws SQLException {
-        String addUser= "INSERT INTO homeWork5.User (userName, password, fristName, lastName, phoneNumber, email)" +
+        String addUser= "INSERT INTO homeWork5.User (userName, password, firstName, lastName, phoneNumber, email)" +
                 " VALUES (?, ?, ?,?,?,?)";
 
         PreparedStatement preparedStatement = connection.prepareStatement(addUser);
 
         preparedStatement.setString(1,user.getUserName());
         preparedStatement.setString(2,user.getPassword());
-        preparedStatement.setString(4,user.getFirstName());
+        preparedStatement.setString(3,user.getFirstName());
         preparedStatement.setString(4,user.getLastName());
         preparedStatement.setString(5,user.getPhoneNumber());
         preparedStatement.setString(6,user.getEmail());
        preparedStatement.executeUpdate();
        String getUserId = "select u.id from User as u where userName=?";
       PreparedStatement preparedStatementGetId = connection.prepareStatement(getUserId);
-      preparedStatement.setString(1,user.getUserName());
-      ResultSet resultSet = preparedStatement.executeQuery();
+      preparedStatementGetId.setString(1,user.getUserName());
+
+
+      ResultSet resultSet = preparedStatementGetId.executeQuery();
       while (resultSet.next()){
           user.setId(resultSet.getInt("id"));
       }
