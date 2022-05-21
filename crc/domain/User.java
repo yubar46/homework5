@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class User {
@@ -36,6 +37,8 @@ public class User {
         this.email = email;
         this.userName = userName;
         this.password = password;
+        addresses = new ArrayList<>();
+        pastOrders = new LinkedList<>();
 
     }
     public User(){
@@ -100,7 +103,7 @@ public class User {
 
 
 
-    public List<Address> getAddresses() {
+    public ArrayList<Address> getAddresses() {
         return addresses;
     }
 

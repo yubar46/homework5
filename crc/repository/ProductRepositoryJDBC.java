@@ -41,21 +41,34 @@ public class ProductRepositoryJDBC implements  ProductRepository {
     }
 
     public void showAllProducts(int ptId) throws SQLException {
-        String showProducts = "select p.name,A.title,f.value,p.price,p.number,p.id from ProductType as pt left join  Product as p on" +
+        String showProducts = "select p.name,A.title,f.value,p.price,p.number,p.id,pt.name,A.id  from ProductType as pt left join  Product as p on" +
                 " pt.id = p.ProductType_id left join ProductType_has_Attribute  as PThA on pt.id = PThA.ProductType_id" +
-                "  left join Attribute  as A on PThA.Attribute_id = A.id left join Feature as f on f.AttributeId = A.id where pt.id = ?";
+                "  left join Attribute  as A on PThA.Attribute_id = A.id left join Feature as f on f.AttributeId = A.id where pt.id = ? ";
         PreparedStatement preparedStatement = connection.prepareStatement(showProducts);
         preparedStatement.setInt(1,ptId);
         ResultSet resultSet = preparedStatement.executeQuery();
-
+        int productId=0;
+        int valueId=0;
         while (resultSet.next()){
             if (resultSet.getInt(5)>0){
-                System.out.print("name"+resultSet.getString(1)+"\t");
-                System.out.print(resultSet.getString(2)+" :"+resultSet.getString(3)+"\t");
-                System.out.print( "price : "+resultSet.getString(4)+"\t");
-                System.out.print( "number : "+resultSet.getString(5)+"\t");
-                System.out.print( "product id  : "+resultSet.getString(6)+"\t");
-                System.out.println();
+
+                    if (resultSet.getInt(6)!=productId){
+                        System.out.print( resultSet.getString(7)+" name:  " +resultSet.getString(1)+"\t");
+                        System.out.print(resultSet.getString(2)+" :"+resultSet.getString(3)+"\t");
+                        System.out.print( "price : "+resultSet.getString(4)+"\t");
+                        System.out.print( "number : "+resultSet.getString(5)+"\t");
+                        System.out.print( "product id  : "+resultSet.getString(6)+"\t");
+                        System.out.println();
+                        productId=resultSet.getInt(6);
+                    }else if (resultSet.getInt(8)!=valueId){
+                        System.out.println();
+                        System.out.print(resultSet.getString(2)+" :"+resultSet.getString(3)+"\t");
+                        System.out.println();
+                        valueId=resultSet.getInt(8);
+                    }
+
+
+
             }
 
         }

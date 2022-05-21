@@ -20,36 +20,42 @@ public class CartRepositoryJDBC implements  CartRepository{
     @Override
     public int addToCart(Cart cart) throws SQLException {
 
-        String add = "INSERT INTO Cart  ( User_id, number,allPrice, productId) VALUES (?, ?,?,?)";
-        PreparedStatement preparedStatement =connection.prepareStatement(add);
-        for (int i = 0 ;i<cart.getProducts().size();i++){
+        if (!cart.getProducts().isEmpty()){
+
+            String add = "INSERT INTO Cart  ( User_id, number,allPrice, productId) VALUES (?, ?,?,?)";
+            PreparedStatement preparedStatement =connection.prepareStatement(add);
+            for (int i = 0 ;i<cart.getProducts().size();i++){
+                preparedStatement.setInt(1,cart.getUserId());
+                preparedStatement.setInt(2,cart.getProducts().get(i).getNumber());
+                preparedStatement.setInt(3,cart.getProducts().get(i).getAllPrice());
+                preparedStatement.setInt(4,cart.getProducts().get(i).getProduct().getId());
+                preparedStatement.executeUpdate();
+            }
+
+            String cartId = "select c.id from Cart as c left join" +
+                    " Cart_has_Product ChP on c.id = ChP.Cart_id where User_id=? and number=?   ";
+
+            preparedStatement = connection.prepareStatement(cartId);
             preparedStatement.setInt(1,cart.getUserId());
-            preparedStatement.setInt(2,cart.getProducts().get(i).getNumber());
-            preparedStatement.setInt(3,cart.getProducts().get(i).getAllPrice());
-            preparedStatement.setInt(4,cart.getProducts().get(i).getProduct().getId());
+            preparedStatement.setInt(2,cart.getProducts().get(cart.getProducts().size()-1).getNumber());
+            //preparedStatement.setInt(3,cart.getAllPrice());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int id=0;
+            while (resultSet.next()){
+                id= resultSet.getInt(1);
+
+            }
+
+            String sql ="insert  into  Cart_has_Product (Cart_id,Product_id) values (?,?)";
+            preparedStatement =connection.prepareStatement(sql);
+            preparedStatement.setInt(1,id);
+            preparedStatement.setInt(2,cart.getProducts().get(cart.getProducts().size()-1).getProduct().getId());
             preparedStatement.executeUpdate();
+
+            return id;
         }
 
-        String cartId = "select c.id from Cart as c left join" +
-                " Cart_has_Product ChP on c.id = ChP.Cart_id where User_id=? and number=?   ";
-        preparedStatement = connection.prepareStatement(cartId);
-        preparedStatement.setInt(1,cart.getUserId());
-        preparedStatement.setInt(2,cart.getProducts().get(cart.getProducts().size()-1).getNumber());
-        //preparedStatement.setInt(3,cart.getAllPrice());
-        ResultSet resultSet = preparedStatement.executeQuery();
-        int id=0;
-        while (resultSet.next()){
-             id= resultSet.getInt(1);
-
-        }
-
-       String sql ="insert  into  Cart_has_Product (Cart_id,Product_id) values (?,?)";
-       preparedStatement =connection.prepareStatement(sql);
-       preparedStatement.setInt(1,id);
-        preparedStatement.setInt(2,cart.getProducts().get(cart.getProducts().size()-1).getProduct().getId());
-        preparedStatement.executeUpdate();
-
-    return id;
+        else return cart.getId();
     }
 
     @Override
@@ -60,7 +66,7 @@ public class CartRepositoryJDBC implements  CartRepository{
             preparedStatement.setInt(1,userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                System.out.print("produCt id : " +resultSet.getInt(6)+"\t");
+                System.out.print("product id : " +resultSet.getInt(6)+"\t");
                 System.out.print("product name  " +resultSet.getString(1)+"\t");
                 System.out.print("number : " +resultSet.getInt(2)+"\t");
                 System.out.print("price : " +resultSet.getInt(3)+"\t");
@@ -93,7 +99,7 @@ public class CartRepositoryJDBC implements  CartRepository{
     @Override
     public Cart selectCart(int userId) throws SQLException {
         String viewCart = "select P.name, c.number,P.price, c.AllPrice , c.id ,P.id from Cart as c left join" +
-                " Cart_has_Product ChP on c.id = ChP.Cart_id left join Product P on ChP.Product_id = P.id where User_id=?";
+                " Cart_has_Product ChP on c.id = ChP.Cart_id left join Product P on ChP.Product_id = P.id where User_id=? order by p.id";
         PreparedStatement preparedStatement = connection.prepareStatement(viewCart);
         preparedStatement.setInt(1,userId);
         ResultSet resultSet = preparedStatement.executeQuery();
