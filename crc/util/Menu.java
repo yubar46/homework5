@@ -349,7 +349,9 @@ public class Menu {
             pastOrders.setUserID(user.getId());
             user.getPastOrders().add(pastOrders);
             applicationContext.getPastOrdersRepository().AddToPastOrders(pastOrders, user);
+
         }
+        applicationContext.getCartRepository().eraseCart(user.getId());
 
 
     }
