@@ -140,5 +140,20 @@ public class CartRepositoryJDBC implements  CartRepository{
 
     }
 
+    @Override
+    public void eraseCart(int userId) throws SQLException {
+      String eraseCartHasP= "delete from Cart_has_Product where userId = ?";
+      PreparedStatement preparedStatement = connection.prepareStatement(eraseCartHasP);
+      preparedStatement.setInt(1,userId);
+      preparedStatement.executeUpdate();
+      String eraseCart = "delete from Cart where User_id=?";
+      preparedStatement.setInt(1,userId);
+      preparedStatement.executeUpdate();
+
+
+
+
+    }
+
 
 }
