@@ -14,11 +14,11 @@ public class User {
     private  int id;
 
 
-    private ArrayList<Address> addresses;
+    private ArrayList<Address> addresses = new ArrayList<Address>();
 
    private Cart cart = new Cart();
 
-   private List<PastOrders> pastOrders;
+   private List<PastOrders>   pastOrders = new LinkedList<>();
 
 
 
@@ -37,8 +37,8 @@ public class User {
         this.email = email;
         this.userName = userName;
         this.password = password;
-        addresses = new ArrayList<>();
-        pastOrders = new LinkedList<>();
+
+
 
     }
     public User(){
@@ -107,8 +107,11 @@ public class User {
         return addresses;
     }
 
-    public void setAddresses(Address addresses) {
+    public void addAddress(Address addresses) {
         this.addresses.add(addresses);
+    }
+    public void setAddresses(ArrayList<Address>  addresses){
+        this.addresses = addresses;
     }
 
 
