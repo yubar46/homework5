@@ -4,18 +4,18 @@ public class Address {
     private String state;
     private String city;
     private String streetName;
-    private String pisitolCode;
+    private String pistolCode;
     private int UserId;
     private int id;
 
-    public Address(String state, String city, String streetName, String pisitolCode) {
+    public Address(String state, String city, String streetName, String pistolCode) {
         this.state = state;
         this.city = city;
         this.streetName = streetName;
-        this.pisitolCode = pisitolCode;
+        this.pistolCode = pistolCode;
     }
 
-    public Address(){
+    public Address() {
 
     }
 
@@ -43,12 +43,12 @@ public class Address {
         this.streetName = streetName;
     }
 
-    public String getPisitolCode() {
-        return pisitolCode;
+    public String getPistolCode() {
+        return pistolCode;
     }
 
-    public void setPisitolCode(String pisitolCode) {
-        this.pisitolCode = pisitolCode;
+    public void setPistolCode(String pistolCode) {
+        this.pistolCode = pistolCode;
     }
 
     public int getUserId() {
@@ -66,7 +66,9 @@ public class Address {
     public void setId(int id) {
         this.id = id;
     }
-    public String  toString(){
-        return String.format("%s %s %s %s ",state,city, streetName,pisitolCode);
+
+    @Override
+    public String toString() {
+        return String.format("%s %s%s%s%s %n", state+" ", city+" ", streetName+" ", "pistol code: ", pistolCode);
     }
 }
