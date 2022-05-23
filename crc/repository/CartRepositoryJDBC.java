@@ -66,13 +66,16 @@ public class CartRepositoryJDBC implements  CartRepository{
             preparedStatement.setInt(1,userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
-                System.out.print("product id : " +resultSet.getInt(6)+"\t");
-                System.out.print("product name  " +resultSet.getString(1)+"\t");
-                System.out.print("number : " +resultSet.getInt(2)+"\t");
-                System.out.print("price : " +resultSet.getInt(3)+"\t");
-                System.out.print("allPrice : " +resultSet.getInt(4)+"\t");
-                System.out.println("cart id : "+resultSet.getInt(5)+"\t");
-                System.out.println();
+                if (resultSet.getInt(6)!=0){
+                    System.out.print("product id : " +resultSet.getInt(6)+"\t");
+                    System.out.print("product name  " +resultSet.getString(1)+"\t");
+                    System.out.print("number : " +resultSet.getInt(2)+"\t");
+                    System.out.print("price : " +resultSet.getInt(3)+"\t");
+                    System.out.print("allPrice : " +resultSet.getInt(4)+"\t");
+                    System.out.println("cart id : "+resultSet.getInt(5)+"\t");
+                    System.out.println();
+                }
+
 
             }
     }
@@ -99,7 +102,7 @@ public class CartRepositoryJDBC implements  CartRepository{
     @Override
     public Cart selectCart(int userId) throws SQLException {
         String viewCart = "select P.name, c.number,P.price, c.AllPrice , c.id ,P.id from Cart as c left join" +
-                " Cart_has_Product ChP on c.id = ChP.Cart_id left join Product P on ChP.Product_id = P.id where User_id=? order by p.id";
+                " Cart_has_Product ChP on c.id = ChP.Cart_id left join Product P on ChP.Product_id = P.id where User_id=? order by P.id";
         PreparedStatement preparedStatement = connection.prepareStatement(viewCart);
         preparedStatement.setInt(1,userId);
         ResultSet resultSet = preparedStatement.executeQuery();
