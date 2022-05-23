@@ -11,6 +11,7 @@ public interface CartRepository {
     public void   deleteFromCart(int cartId,int productId) throws SQLException;
     public Cart selectCart(int userId) throws SQLException;
     public  void    editItemNUmber();
+    public void eraseCart(int userId);
 
 
 }
