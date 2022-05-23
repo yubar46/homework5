@@ -72,120 +72,141 @@ public class Menu {
         }
 
     private void insideMenu(User user) throws SQLException {
-        System.out.printf("  %s %n %s %n %s %n","for view products enter 1 "
-                ,"for view your cart enter2 ","for exit enter-1");
-             int select= customerSelect();
-        if (select==1){
-            viewProduct();
-            int choice=0;
-            while (choice!=-1){
-            System.out.println("for add product to your card enter 1");
-            System.out.println("for view your cart enter 2 ");
-            System.out.println("for view another product type enter3  ");
-            System.out.println("for exit enter -1");
-             choice = inputNumber.nextInt();
 
-                if (choice==1){
-                    System.out.println("enter product id");
-                    int productId = inputNumber.nextByte();
+        int select=0;
 
-                    Product product = applicationContext.getProductRepository().selectProduct(productId);
+             while (select!=-1){
+                 System.out.printf("  %s %n %s %n %s %n","for view products enter 1 "
+                         ,"for view your past orders enter 2 ","for exit enter-1");
+                 select= customerSelect();
+                 if (select==1){
+                     viewProduct();
+                     int choice=0;
+                     while (choice!=-1){
+                         showProductMenu();
+                         choice = inputNumber.nextInt();
 
-                    boolean exist = false;
-                    int nOfOrder;
-                    do {
-                        System.out.println("enter number of product");
-                         nOfOrder = inputNumber.nextInt();
-
-                        exist = applicationContext.getProductRepository().isExist(product,nOfOrder);
-                        if (!exist){
-                            System.out.println("item is not enough exist choice number again");
-                        }
-                    }while (exist =false);
-                    CartItem cartItem = new CartItem(product,nOfOrder);
-
-                    if (applicationContext.getCart().getProducts().size()<5){
-                        applicationContext.getCart().setProducts(cartItem);
-                        applicationContext.getCart().setUserId(user.getId());
-                        applicationContext.getCart().calculateCartPrice();
+                         if (choice==1){
+                            selectToCart(user);
 
 
-                        int id= applicationContext.getCartRepository().addToCart(applicationContext.getCart());
-                        applicationContext.getCart().setId(id);
-                        applicationContext.setCart(applicationContext.getCart());
-                        product.setNumber(product.getNumber()-nOfOrder);
-                        applicationContext.getProductRepository().editProduct(product,(product.getNumber()));
+                         }if (choice==2){
+                             applicationContext.getCartRepository().viewCart(applicationContext.getCart().getUserId());
+                             showCartMenu();
 
+                             int cartChoice = inputNumber.nextInt();
+                             if (cartChoice==1){
+                                 deleteOrderFromCart(user);
 
+                             }
+                             if (cartChoice==2){
 
-                    }else System.out.println("cart is full");
+                                 if (user.getAddresses().isEmpty()){
+                                     addAddress(user);
 
+                                 }else{
 
-                }if (choice==2){
-                    applicationContext.getCartRepository().viewCart(applicationContext.getCart().getUserId());
-                   showCartMenu();
+                                     applicationContext.getAddressRepository().readAddress(user.getId());
+                                     System.out.println("please enter address id");
+                                     int addressId = inputNumber.nextInt();
+                                     PastOrders pastOrders = new PastOrders();
+                                     Address address =new Address() ;
+                                     for (int i = 0 ; i<user.getAddresses().size();i++){
+                                         if (user.getAddresses().get(i).getId()==addressId){
+                                             address.setState(user.getAddresses().get(i).getState());
+                                             address.setCity(user.getAddresses().get(i).getCity());
+                                             address.setStreetName(user.getAddresses().get(i).getStreetName());
+                                             address.setPistolCode(user.getAddresses().get(i).getPistolCode());
+                                             pastOrders.setAddress(address);
 
-                    int cartChoice = inputNumber.nextInt();
-                    if (cartChoice==1){
-                      deleteOrderFromCart(user);
+                                         }
+                                     }
 
-                    }
-                    if (cartChoice==2){
+                                     for (int i = 0; i< applicationContext.getCart().getProducts().size();i++){
+                                         pastOrders.setProduct(applicationContext.getCart().getProducts().get(i).getProduct());
+                                         pastOrders.setPrice(applicationContext.getCart().getProducts().get(i).getProduct().getPrice());
+                                         pastOrders.setUserID(user.getId());
+                                         user.getPastOrders().add(pastOrders);
+                                         applicationContext.getPastOrdersRepository().AddToPastOrders(pastOrders,user);
 
-                        if (user.getAddresses().isEmpty()){
-                           addAddress(user);
-
-                        }else{
-
-                            applicationContext.getAddressRepository().readAddress(user.getId());
-                            System.out.println("please enter address id");
-                            int addressId = inputNumber.nextInt();
-                            PastOrders pastOrders = new PastOrders();
-                            Address address =new Address() ;
-                            for (int i = 0 ; i<user.getAddresses().size();i++){
-                                if (user.getAddresses().get(i).getId()==addressId){
-                                    address =(user.getAddresses().get(i));
-
-                                }
-                            }
-                            for (int i = 0; i< applicationContext.getCart().getProducts().size();i++){
-                                pastOrders.setProduct(applicationContext.getCart().getProducts().get(i).getProduct());
-                                pastOrders.setPrice(applicationContext.getCart().getProducts().get(i).getProduct().getPrice());
-                                pastOrders.setUserID(user.getId());
-                                user.getPastOrders().add(pastOrders);
-                                applicationContext.getPastOrdersRepository().AddToPastOrders(pastOrders);
-                                // applicationContext.getProductRepository().editProduct(pastOrders.getProduct(),
-                                //       ( pastOrders.getProduct().getNumber()));
-
-                            }
+                                     }
 
 
 
-                        }
+                                 }
 
-                    }
+                             }if(cartChoice==-1){
+                                 break;
+                             }
 
-                }if(choice==3){
-                    viewProduct();
-                }
-
-
-
-            }
+                         }if(choice==3){
+                             viewProduct();
+                         }
 
 
-        }if (select==2){
 
-        }
+                     }
+
+
+                 }if (select==2){
+                    applicationContext.getPastOrdersRepository().selectPastOrders(user.getId());
+
+                 }
+
+
+             }
 
 
 
 
     }
+    private void showProductMenu(){
+        System.out.println("for add product to your card enter 1");
+        System.out.println("for view your cart enter 2 ");
+        System.out.println("for view another product type enter3  ");
+        System.out.println("for exit enter -1");
+    }
+
+    private void selectToCart(User user) throws SQLException {
+        System.out.println("enter product id");
+        int productId = inputNumber.nextByte();
+
+        Product product = applicationContext.getProductRepository().selectProduct(productId);
+
+        boolean exist = false;
+        int nOfOrder;
+        do {
+            System.out.println("enter number of product");
+            nOfOrder = inputNumber.nextInt();
+
+            exist = applicationContext.getProductRepository().isExist(product,nOfOrder);
+            if (!exist){
+                System.out.println("item is not enough exist choice number again");
+            }
+        }while (exist =false);
+        CartItem cartItem = new CartItem(product,nOfOrder);
+
+        if (applicationContext.getCart().getProducts().size()<5){
+            applicationContext.getCart().setProducts(cartItem);
+            applicationContext.getCart().setUserId(user.getId());
+            applicationContext.getCart().calculateCartPrice();
+
+
+            int id= applicationContext.getCartRepository().addToCart(applicationContext.getCart());
+            applicationContext.getCart().setId(id);
+            applicationContext.setCart(applicationContext.getCart());
+            product.setNumber(product.getNumber()-nOfOrder);
+            applicationContext.getProductRepository().editProduct(product,(product.getNumber()));
+
+
+
+        }else System.out.println("cart is full");
+    }
 
     private void    showCartMenu(){
         System.out.println("for delete order from cart enter 1");
         System.out.println("Finalize the shopping cart enter 2");
+        System.out.println("for back to main menu enter -1");
     }
 
     private void deleteOrderFromCart(User user) throws SQLException {
@@ -213,7 +234,7 @@ public class Menu {
         address.setUserId(user.getId());
         int addressId = applicationContext.getAddressRepository().addAddress(address);
         address.setId(addressId);
-        user.setAddresses(address);
+        user.addAddress(address);
     }
 
         private  void viewProduct() throws SQLException {
@@ -270,6 +291,8 @@ public class Menu {
                      else System.out.println("user name or password is wrong");
                 }
                 user = applicationContext.getUserRepository().readUser(userId);
+
+               applicationContext.getUser().setAddresses(applicationContext.getAddressRepository().selectAddress(userId));
                 return user;
 
 
