@@ -3,6 +3,7 @@ package repository;
 import domain.Address;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public interface AddressRepository {
 
@@ -13,6 +14,7 @@ public interface AddressRepository {
     public void editAddress(Address address);
 
     public void deleteAddress(Address address);
+    public ArrayList<Address> selectAddress(int userId) throws SQLException;
 
 
 }
