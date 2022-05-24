@@ -10,7 +10,29 @@ public class PastOrders {
 
   private int userID;
   private int price;
-  private  Address address;
+
+  private int allPrice;
+  private int totalPrice;
+
+
+
+    public int getAllPrice() {
+        return allPrice;
+    }
+
+    public void setAllPrice(int allPrice) {
+        this.allPrice = allPrice;
+    }
+
+    public int getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    private  Address address;
 
     public int getUserID() {
         return userID;

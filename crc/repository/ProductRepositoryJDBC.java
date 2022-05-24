@@ -41,11 +41,14 @@ public class ProductRepositoryJDBC implements  ProductRepository {
     }
 
     public void showAllProducts(int ptId) throws SQLException {
-        String showProducts = "select p.name,A.title,f.value,p.price,p.number,p.id,pt.name,A.id  from ProductType as pt left join  Product as p on" +
-                " pt.id = p.ProductType_id left join ProductType_has_Attribute  as PThA on pt.id = PThA.ProductType_id" +
-                "  left join Attribute  as A on PThA.Attribute_id = A.id left join Feature as f on f.AttributeId = A.id where pt.id = ? ";
+        String showProducts = "select p.name,A.title,fe.value,p.price,p.number,p.id,pt.name,fe.id  from ProductType as pt " +
+                "left join  Product as p on pt.id = p.ProductType_id left join ProductType_has_Attribute  as PThA on" +
+                " pt.id = PThA.ProductType_id  left join Attribute  as A on PThA.Attribute_id = A.id right join  " +
+                " Feature as fe on fe.productId = p.id  and fe.AttributeId =A.id where pt.id = ? and " +
+                "PThA.ProductType_id= ? ";
         PreparedStatement preparedStatement = connection.prepareStatement(showProducts);
         preparedStatement.setInt(1,ptId);
+        preparedStatement.setInt(2,ptId);
         ResultSet resultSet = preparedStatement.executeQuery();
         int productId=0;
         int valueId=0;
@@ -79,7 +82,7 @@ public class ProductRepositoryJDBC implements  ProductRepository {
         Product product = new Product();
         String selectProduct ="select p.id,p.name,p.number,p.price,p.ProductType_id,F.AttributeId,F.value  from ProductType as pt left join Product" +
                 " as p on pt.id = p.ProductType_id left join ProductType_has_Attribute as ptha on" +
-                "    pt.id = ptha.ProductType_id left join Attribute a on ptha.Attribute_id = a.id= 1 " +
+                "    pt.id = ptha.ProductType_id left join Attribute as a on ptha.Attribute_id = a.id " +
                 "left join Feature F on a.id = F.AttributeId where p.id=?";
         PreparedStatement preparedStatement = connection.prepareStatement(selectProduct);
         preparedStatement.setInt(1,productId);

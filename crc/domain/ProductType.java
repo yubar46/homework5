@@ -7,4 +7,6 @@ public class ProductType {
    private String name;
    private int id;
    private List<Attribute> attributes ;
+
+
 }

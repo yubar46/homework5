@@ -101,6 +101,8 @@ public class Menu {
 
                             if (user.getAddresses().isEmpty()) {
                                 addAddress(user);
+                                selectAddress(user);
+
 
                             } else {
                                 System.out.println("for select address enter 1--for add new address enter2");
@@ -177,7 +179,7 @@ public class Menu {
             applicationContext.getCart().calculateCartPrice();
 
 
-            int id = applicationContext.getCartRepository().addToCart(applicationContext.getCart());
+            int id = applicationContext.getCartRepository().addToCart(applicationContext.getCart(),user.getId());
             applicationContext.getCart().setId(id);
             applicationContext.setCart(applicationContext.getCart());
             product.setNumber(product.getNumber() - nOfOrder);
@@ -202,7 +204,7 @@ public class Menu {
         Cart cart = new Cart();
         cart = applicationContext.getCartRepository().selectCart(user.getId());
         applicationContext.setCart(cart);
-        applicationContext.getCartRepository().addToCart(cart);
+        applicationContext.getCartRepository().addToCart(cart,user.getId());
     }
 
     private void addAddress(User user) throws SQLException {
@@ -346,7 +348,10 @@ public class Menu {
         for (int i = 0; i < applicationContext.getCart().getProducts().size(); i++) {
             pastOrders.setProduct(applicationContext.getCart().getProducts().get(i).getProduct());
             pastOrders.setPrice(applicationContext.getCart().getProducts().get(i).getProduct().getPrice());
+            pastOrders.setTotalPrice(applicationContext.getCart().getProducts().get(i).getAllPrice());
+            pastOrders.setAllPrice(applicationContext.getCart().getCartPrice());
             pastOrders.setUserID(user.getId());
+            pastOrders.getProduct().setNumber(applicationContext.getCart().getProducts().get(i).getNumber());
             user.getPastOrders().add(pastOrders);
             applicationContext.getPastOrdersRepository().AddToPastOrders(pastOrders, user);
 
